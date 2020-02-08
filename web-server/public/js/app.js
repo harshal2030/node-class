@@ -1,0 +1,1 @@
+console.log("It is client side javascript");
