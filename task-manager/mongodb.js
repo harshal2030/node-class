@@ -1,60 +1,36 @@
-const mongodb = require('mongodb');
-const mongodbClient = mongodb.MongoClient;
+const {MongoClient, ObjectID} = require('mongodb');
 
 const connectionURL = 'mongodb://127.0.0.1:27017';
 const databaseName = 'task-manager';
 
-mongodbClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
+MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
     if (error) {
         return console.log('Unable to connect to database', error);
     }
 
     const db = client.db(databaseName);
 
-    // db.collection('users').insertOne({
-    //     name: 'Harshal',
-    //     age: 17
-    // }, (error, result) => {
+    // db.collection('users').findOne({_id: new ObjectID("5e419fc8f7848a1625ccc842")}, (error, user) => {
     //     if (error) {
-    //         return console.log('Unable to insert user')
+    //         return console.log('unable to fetch');
     //     }
 
-    //     console.log(result.ops);
+    //     console.log(user)
     // })
 
-    // db.collection('users').insertMany([
-    //     {
-    //         name: 'Gunther',
-    //         age: 34,
-    //     }, {
-    //         name: 'Jane',
-    //         age: 17,
-    //     }
-    // ], (error, result) => {
-    //     if (error) {
-    //         return console.log('Unable to insert user data');
-    //     }
-    //     console.log(result.ops);
+    // db.collection('users').find({age: 17}).count((error, users) => {
+    //     console.log(users);
     // })
 
-    db.collection('tasks').insertMany([
-        {
-            description: 'Testing',
-            completed: true
-        },
-        {
-            description: 'test2',
-            completed: true
-        },
-        {
-            description: 'test3',
-            completed: false
-        }
-    ], (error, result) => {
+    db.collection('tasks').findOne({_id: new ObjectID("5e41a43c93b1081d3d957b64")}, (error, result) => {
         if (error) {
-            return console.log('Unable to insert tasks.');
+            return console.log('error')
         }
 
-        console.log(result.ops);
+        console.log(result);
+    })
+
+    db.collection('tasks').find({completed: true}).toArray((error, result) => {
+        console.log(result);
     })
 })
