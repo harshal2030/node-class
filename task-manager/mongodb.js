@@ -13,17 +13,20 @@ MongoClient.connect(
 
     const db = client.db(databaseName);
 
-    db.collection("users").updateOne(
-      { _id: new ObjectID("5e41a1644a05cc18e3dcc4a1") },
-      {
-        $set: {
-          name: "Mike"
-        }
-      }
-    ).then((result) => {
+    // db.collection("users").deleteMany({
+    //     age: 17
+    // }).then((result) => {
+    //     console.log(result);
+    // }).catch((error) => {
+    //     console.log(error)
+    // })
+
+    db.collection("tasks").deleteOne({
+        description: "test3"
+    }).then(result => {
         console.log(result);
     }).catch((error) => {
-        console.log(error)
+        console.log(error);
     })
   }
 );
