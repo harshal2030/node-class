@@ -32,32 +32,47 @@ const User = mongoose.model('User', {
                 throw new Error('Age must be a positive number')
             }
         }
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 7,
+        validate(value) {
+            if (value.toLowerCase().includes('password')) {
+                throw new Error('Insecure password')
+            }
+        }
     }
 })
 
 const tasks = mongoose.model('tasks', {
     description: {
-        type: String
+        type: String,
+        required: true,
+        trim: true,
     },
     completed: {
-        type: Boolean
+        type: Boolean,
+        default: false,
     }
 })
 
-// const task = new tasks({
-//     description: "Learn the Node js",
-//     completed: false,
-// })
-
-// task.save().then(() => {
-//     console.log(task)
-// }).catch((error) => console.log(error))
-
-const me = new User({
-    name: 'Harshal     ',
-    email: 'GDGD@test.com',
+const task = new tasks({
+    description: "Learn the Node js and more",
+    completed: false,
 })
 
-me.save().then(() => {
-    console.log(me)
-}).catch(error => console.log('Error! ', error))
+task.save().then(() => {
+    console.log(task)
+}).catch((error) => console.log(error))
+
+// const me = new User({
+//     name: 'Harshal     ',
+//     email: 'GDGD@test.com',
+//     password: '          duytfutyfuytfuy     '
+// })
+
+// me.save().then(() => {
+//     console.log(me)
+// }).catch(error => console.log('Error! ', error))
