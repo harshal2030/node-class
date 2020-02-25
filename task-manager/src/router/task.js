@@ -2,9 +2,17 @@ const express = require('express');
 const Task = require('./../models/tasks')
 const auth = require('./../middleware/auth')
 const router = new express.Router()
-
+// GET /tasks/completed=true
+// GET /tasks/limit=10&skip=0
+// GET /tasks/sortBy=createdAt:desc
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
+    const sort = {}
+
+    if (req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+    }
 
     if (req.query.completed) {
         match.completed = req.query.completed === 'true'
@@ -13,7 +21,12 @@ router.get('/tasks', auth, async (req, res) => {
     try {
         await req.user.populate({
             path: 'tasks',
-            match
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip),
+                sort
+            }
         }).execPopulate()
         res.send(req.user.tasks)
     } catch (e) {
