@@ -1,6 +1,4 @@
 const request = require("supertest");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const app = require("./../src/app");
 const User = require("./../src/models/user");
 const {user1Id, user1, setupDatabase} = require('./fixtures/db')
