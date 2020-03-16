@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
+const Filter = require('bad-words');
 
 const pulicDirPath = path.join(__dirname, '../public');
 
@@ -17,12 +18,18 @@ io.on('connection', (socket) => {
     socket.emit("message", "Welcome");
     socket.broadcast.emit('message', 'a new user has joined');
 
-    socket.on('sendMessage', (message) => {
+    socket.on('sendMessage', (message, callback) => {
+        const filter = new Filter();
+        if (filter.isProfane(message)) {
+            return callback('Profanity is not allowed')
+        }
         io.emit('sendMessage', message)
+        callback()
     })
 
-    socket.on('sendLocation', (coords) => {
-        io.emit('message', `Location: ${coords.latitude}, ${coords.longitude}`)
+    socket.on('sendLocation', (coords, callback) => {
+        io.emit('message', coords)
+        callback('location shared')
     })
 
     socket.on('disconnect', () => {

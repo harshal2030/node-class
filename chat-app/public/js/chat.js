@@ -14,7 +14,13 @@ socket.on("sendMessage", (message) => {
 document.querySelector("#message-form").addEventListener("submit",(e) => {
     e.preventDefault();
     message =  e.target.elements.message.value;
-    socket.emit("sendMessage", message)
+    socket.emit("sendMessage", message, (error) => {
+        if (error) {
+            return console.log(error)
+        }
+
+        console.log('delivered');
+    })
 })
 
 document.querySelector("#send-location").addEventListener("click", () => {
@@ -24,6 +30,8 @@ document.querySelector("#send-location").addEventListener("click", () => {
 
     navigator.geolocation.getCurrentPosition((position) => {
         data = {latitude: position.coords.latitude, longitude: position.coords.longitude}
-        socket.emit("sendLocation", data)
+        socket.emit("sendLocation", `http://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`, (msg) => {
+            console.log(msg)
+        });
     })
 })
