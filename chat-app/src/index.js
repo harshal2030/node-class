@@ -3,6 +3,7 @@ const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
+const {generateMessage, generateLocationMessage} = require('./utils/messages')
 
 const pulicDirPath = path.join(__dirname, '../public');
 
@@ -15,25 +16,25 @@ const io = socketio(server)
 io.on('connection', (socket) => {
     console.log('New Websocket connection.')
     // socket.emit('countUpdated', count)
-    socket.emit("message", "Welcome");
-    socket.broadcast.emit('message', 'a new user has joined');
+    socket.emit("message", generateMessage('Welcome'));
+    socket.broadcast.emit('message', generateMessage('a new user has joined'));
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter();
         if (filter.isProfane(message)) {
             return callback('Profanity is not allowed')
         }
-        io.emit('sendMessage', message)
+        io.emit('message', generateMessage(message))
         callback()
     })
 
     socket.on('sendLocation', (coords, callback) => {
-        io.emit('message', coords)
+        io.emit('locationMessage', generateLocationMessage(coords))
         callback('location shared')
     })
 
     socket.on('disconnect', () => {
-        io.emit('message', 'a user has left')
+        io.emit('message', generateMessage('a user has left'))
     })
 })
 
